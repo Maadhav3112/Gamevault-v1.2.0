@@ -58,7 +58,7 @@
     </dependencies>
 
     <build>
-        <finalName>gamevault-backend</finalName>
+        <finalName>gamevault</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
