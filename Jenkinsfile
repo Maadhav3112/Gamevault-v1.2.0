@@ -8,7 +8,7 @@ node {
         def mvnHome = tool name: 'Maven-3.9.16', type: 'maven'
         dir('backend') {
             sh "${mvnHome}/bin/mvn clean package"
-            sh 'mv target/gamevault*.war target/gamevault.war'
+            
         }
     }
 
