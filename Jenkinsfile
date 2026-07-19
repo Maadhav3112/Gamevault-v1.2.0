@@ -1,7 +1,7 @@
 node {
 
     stage('SCM Checkout') {
-        git 'https://github.com/Maadhav3112/Stockpulse'
+        git 'https://github.com/Maadhav3112/Gamevault-v1.2.0'
     }
 
     stage('Maven Build') {
