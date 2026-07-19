@@ -6,14 +6,17 @@ node {
 
     stage('Maven Build') {
         def mvnHome = tool name: 'Maven-3.9.16', type: 'maven'
-        sh "${mvnHome}/bin/mvn clean package"
-        sh 'mv target/gamevault*.war target/gamevault.war'
+        dir('backend') {
+            sh "${mvnHome}/bin/mvn clean package"
+        }
     }
 
     stage('SonarQube Analysis') {
         def mvn = tool 'Maven-3.9.16'
-        withSonarQubeEnv() {
-            sh "${mvn}/bin/mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=gamevault -Dsonar.projectName='GameVault'"
+        dir('backend') {
+            withSonarQubeEnv() {
+                sh "${mvn}/bin/mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=gamevault -Dsonar.projectName='GameVault'"
+            }
         }
     }
 
@@ -47,10 +50,11 @@ node {
                 docker run -d --name tomcattest -p 80:8080 \
                   -e DB_HOST=$DB_HOST \
                   -e DB_NAME=$DB_NAME \
-                  -e DB_USER=$DB_USER \
+                  -e DB_USERNAME=$DB_USER \
                   -e DB_PASSWORD=$DB_PASSWORD \
                   raiden004/gamevault:latest
             '''
         }
     }
+
 }
