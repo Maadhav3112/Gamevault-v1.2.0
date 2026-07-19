@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GameVault — Next-Level Gaming Starts Here</title>
+<meta name="description" content="GameVault — premium gaming consoles, controllers, and accessories." />
+
+<!-- Google Fonts: Poppins for display headings, Inter for body text -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ============================================================
+     NAVIGATION BAR
+     ============================================================ -->
+<header class="navbar" id="navbar">
+  <div class="navbar__inner">
+
+    <div class="navbar__brand">
+      <button class="navbar__hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="#home" class="navbar__logo">
+        <span class="navbar__logo-icon">◆</span>GameVault
+      </a>
+    </div>
+
+    <nav class="navbar__links" id="navLinks">
+      <a href="#home" class="nav-link active" data-nav="home">Home</a>
+      <a href="#catalog" class="nav-link" data-nav="Consoles">Consoles</a>
+      <a href="#catalog" class="nav-link" data-nav="Controllers">Controllers</a>
+      <a href="#catalog" class="nav-link" data-nav="Accessories">Accessories</a>
+      <a href="#catalog" class="nav-link" data-nav="deals">Deals</a>
+    </nav>
+
+    <div class="navbar__actions">
+      <div class="search-bar">
+        <svg class="search-bar__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+          <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search products, brands, platforms..." aria-label="Search products" />
+      </div>
+
+      <button class="icon-btn" id="cartToggleBtn" aria-label="Open shopping cart">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 3H5L5.4 5M5.4 5H21L18 14H7L5.4 5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <circle cx="9" cy="20" r="1.5" fill="currentColor"/>
+          <circle cx="17" cy="20" r="1.5" fill="currentColor"/>
+        </svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+    </div>
+
+  </div>
+</header>
+
+<!-- ============================================================
+     HERO BANNER
+     ============================================================ -->
+<section class="hero" id="home">
+  <div class="hero__glow hero__glow--blue"></div>
+  <div class="hero__glow hero__glow--purple"></div>
+  <div class="hero__content">
+    <span class="hero__eyebrow">Level Up Your Setup</span>
+    <h1 class="hero__headline">Next-Level Gaming<br />Starts Here</h1>
+    <p class="hero__subheading">Discover the latest consoles, controllers, and gaming accessories.</p>
+    <a href="#catalog" class="btn btn--primary hero__cta">Shop Now</a>
+  </div>
+</section>
+
+<!-- ============================================================
+     FEATURED CATEGORIES
+     ============================================================ -->
+<section class="categories">
+  <div class="section-heading">
+    <h2>Shop by Platform</h2>
+  </div>
+  <div class="categories__grid">
+    <button class="category-card" data-platform="PlayStation">
+      <span class="category-card__label">PlayStation</span>
+    </button>
+    <button class="category-card" data-platform="Xbox">
+      <span class="category-card__label">Xbox</span>
+    </button>
+    <button class="category-card" data-platform="Nintendo">
+      <span class="category-card__label">Nintendo</span>
+    </button>
+    <button class="category-card" data-platform="PC">
+      <span class="category-card__label">PC Gaming</span>
+    </button>
+    <button class="category-card" data-category="Accessories">
+      <span class="category-card__label">Accessories</span>
+    </button>
+  </div>
+</section>
+
+<!-- ============================================================
+     CATALOG (SIDEBAR + PRODUCT GRID)
+     ============================================================ -->
+<main class="catalog" id="catalog">
+
+  <!-- ---------- Filter Sidebar ---------- -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__header">
+      <h3>Filters</h3>
+      <button class="sidebar__clear" id="clearFiltersBtn">Clear all</button>
+    </div>
+
+    <div class="filter-group">
+      <h4 class="filter-group__title">Category</h4>
+      <div class="filter-options" id="filterCategory" data-filter-type="category">
+        <label class="filter-option"><input type="radio" name="category" value="" checked><span>All</span></label>
+        <label class="filter-option"><input type="radio" name="category" value="Consoles"><span>Consoles</span></label>
+        <label class="filter-option"><input type="radio" name="category" value="Controllers"><span>Controllers</span></label>
+        <label class="filter-option"><input type="radio" name="category" value="Handheld"><span>Handheld</span></label>
+        <label class="filter-option"><input type="radio" name="category" value="Accessories"><span>Accessories</span></label>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <h4 class="filter-group__title">Brand</h4>
+      <div class="filter-options" id="filterBrand" data-filter-type="brand">
+        <label class="filter-option"><input type="radio" name="brand" value="" checked><span>All</span></label>
+        <label class="filter-option"><input type="radio" name="brand" value="Sony"><span>Sony</span></label>
+        <label class="filter-option"><input type="radio" name="brand" value="Microsoft"><span>Microsoft</span></label>
+        <label class="filter-option"><input type="radio" name="brand" value="Nintendo"><span>Nintendo</span></label>
+        <label class="filter-option"><input type="radio" name="brand" value="Valve"><span>Valve</span></label>
+        <label class="filter-option"><input type="radio" name="brand" value="ASUS"><span>ASUS</span></label>
+        <label class="filter-option"><input type="radio" name="brand" value="8BitDo"><span>8BitDo</span></label>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <h4 class="filter-group__title">Platform</h4>
+      <div class="filter-options" id="filterPlatform" data-filter-type="platform">
+        <label class="filter-option"><input type="radio" name="platform" value="" checked><span>All</span></label>
+        <label class="filter-option"><input type="radio" name="platform" value="PlayStation"><span>PlayStation</span></label>
+        <label class="filter-option"><input type="radio" name="platform" value="Xbox"><span>Xbox</span></label>
+        <label class="filter-option"><input type="radio" name="platform" value="Nintendo"><span>Nintendo</span></label>
+        <label class="filter-option"><input type="radio" name="platform" value="PC"><span>PC</span></label>
+        <label class="filter-option"><input type="radio" name="platform" value="Multi-platform"><span>Multi-platform</span></label>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <h4 class="filter-group__title">Price Range</h4>
+      <div class="filter-options" id="filterPrice" data-filter-type="price">
+        <label class="filter-option"><input type="radio" name="price" value="" checked><span>All</span></label>
+        <label class="filter-option"><input type="radio" name="price" value="0-100"><span>Under $100</span></label>
+        <label class="filter-option"><input type="radio" name="price" value="100-300"><span>$100 – $300</span></label>
+        <label class="filter-option"><input type="radio" name="price" value="300-600"><span>$300 – $600</span></label>
+        <label class="filter-option"><input type="radio" name="price" value="600-999999"><span>Above $600</span></label>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <h4 class="filter-group__title">Minimum Rating</h4>
+      <div class="filter-options" id="filterRating" data-filter-type="rating">
+        <label class="filter-option"><input type="radio" name="rating" value="" checked><span>All</span></label>
+        <label class="filter-option"><input type="radio" name="rating" value="4"><span>4★ &amp; up</span></label>
+        <label class="filter-option"><input type="radio" name="rating" value="4.5"><span>4.5★ &amp; up</span></label>
+        <label class="filter-option"><input type="radio" name="rating" value="5"><span>5★</span></label>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ---------- Product Grid ---------- -->
+  <section class="product-section">
+    <div class="product-section__toolbar">
+      <div class="product-section__count" id="resultsCount">Loading products…</div>
+
+      <div class="product-section__right">
+        <button class="filter-toggle-btn" id="filterToggleBtn" aria-label="Toggle filters">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 6H20M7 12H17M10 18H14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          Filters
+        </button>
+
+        <select class="sort-select" id="sortSelect" aria-label="Sort products">
+          <option value="">Sort: Featured</option>
+          <option value="priceAsc">Price: Low to High</option>
+          <option value="priceDesc">Price: High to Low</option>
+          <option value="rating">Highest Rated</option>
+          <option value="newest">Newest</option>
+          <option value="bestSelling">Best Selling</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="product-grid" id="productGrid" aria-live="polite">
+      <!-- Product cards injected by app.js -->
+    </div>
+
+    <div class="empty-state" id="emptyState" hidden>
+      <p>No products match your filters.</p>
+      <button class="btn btn--ghost" id="emptyStateResetBtn">Reset filters</button>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 GameVault. Built for gamers, by gamers.</p>
+</footer>
+
+<!-- ============================================================
+     LOADING SPINNER (full page overlay)
+     ============================================================ -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+</div>
+
+<!-- ============================================================
+     TOAST NOTIFICATION
+     ============================================================ -->
+<div class="toast" id="toast"></div>
+
+<!-- ============================================================
+     SHOPPING CART DRAWER
+     ============================================================ -->
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+<aside class="cart-drawer" id="cartDrawer" aria-hidden="true">
+  <div class="cart-drawer__header">
+    <h3>Your Cart</h3>
+    <button class="icon-btn icon-btn--plain" id="cartCloseBtn" aria-label="Close cart">✕</button>
+  </div>
+
+  <div class="cart-drawer__items" id="cartItems">
+    <!-- Cart line items injected by app.js -->
+  </div>
+
+  <div class="cart-drawer__footer">
+    <div class="cart-summary-row">
+      <span>Subtotal</span>
+      <span id="cartSubtotal">$0.00</span>
+    </div>
+    <div class="cart-summary-row">
+      <span>Estimated Tax</span>
+      <span id="cartTax">$0.00</span>
+    </div>
+    <div class="cart-summary-row">
+      <span>Shipping</span>
+      <span id="cartShipping">$0.00</span>
+    </div>
+    <div class="cart-summary-row cart-summary-row--total">
+      <span>Grand Total</span>
+      <span id="cartTotal">$0.00</span>
+    </div>
+    <button class="btn btn--primary btn--full" id="checkoutBtn">Checkout</button>
+  </div>
+</aside>
+
+<!-- ============================================================
+     PRODUCT QUICK VIEW MODAL
+     ============================================================ -->
+<div class="modal-backdrop" id="modalBackdrop"></div>
+<div class="product-modal" id="productModal" role="dialog" aria-modal="true" aria-hidden="true">
+  <button class="icon-btn icon-btn--plain modal-close" id="modalCloseBtn" aria-label="Close">✕</button>
+  <div class="product-modal__content" id="modalContent">
+    <!-- Modal content injected by app.js -->
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
