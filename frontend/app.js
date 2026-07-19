@@ -9,7 +9,7 @@
 /* ---------------------------------------------------------------------
    0. Configuration
    --------------------------------------------------------------------- */
-const API_BASE_URL = 'http://api.madyaws.online/gamevault-backend/api';
+const API_BASE_URL = 'http://13.229.227.6/gamevault-backend/api';
 const TAX_RATE = 0.08;          // 8% estimated tax
 const FREE_SHIPPING_THRESHOLD = 100;
 const FLAT_SHIPPING_FEE = 9.99;
