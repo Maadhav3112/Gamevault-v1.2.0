@@ -24,11 +24,13 @@ node {
     }
 
     stage('Trivy Security Scan') {
-        sh '''
-            trivy image --severity HIGH,CRITICAL --ignore-unfixed --format json -o trivy-report.json raiden004/gamevault
-            trivy image --severity HIGH,CRITICAL --ignore-unfixed --no-progress raiden004/gamevault
-        '''
-        archiveArtifacts artifacts: 'trivy-report.json', allowEmptyArchive: true
+        timeout(time: 10, unit: 'MINUTES') {
+            sh '''
+                mkdir -p /var/lib/jenkins/trivy-cache
+                trivy image --cache-dir /var/lib/jenkins/trivy-cache --severity HIGH,CRITICAL --ignore-unfixed --format json -o trivy-report.json raiden004/gamevault
+            '''
+            archiveArtifacts artifacts: 'trivy-report.json', allowEmptyArchive: true
+        }
     }
 
     stage('Docker image push') {
