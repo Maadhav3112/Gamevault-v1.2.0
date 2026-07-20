@@ -70,7 +70,7 @@ node {
         sh '''
             pkill -9 -f "http.server 8081" || true
             cd frontend
-            nohup python3 -m http.server 8081 > /tmp/frontend.log 2>&1 &
+            BUILD_ID=dontKillMe nohup python3 -m http.server 8081 > /tmp/frontend.log 2>&1 &
         '''
     }
 }
