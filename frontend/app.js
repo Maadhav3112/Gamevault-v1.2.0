@@ -9,7 +9,7 @@
 /* ---------------------------------------------------------------------
    0. Configuration
    --------------------------------------------------------------------- */
-const API_BASE_URL = 'http://13.212.48.196:8081/gamevault-backend/api';
+const API_BASE_URL = 'http://13.212.48.196:8085/gamevault-backend/api';
 const TAX_RATE = 0.08;          // 8% estimated tax
 const FREE_SHIPPING_THRESHOLD = 100;
 const FLAT_SHIPPING_FEE = 9.99;
