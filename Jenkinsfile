@@ -1,5 +1,4 @@
 node {
-
     stage('SCM Checkout') {
         git 'https://github.com/Maadhav3112/Gamevault-v1.2.0'
     }
@@ -22,6 +21,17 @@ node {
 
     stage('build Docker Image') {
         sh 'docker build -t raiden004/gamevault .'
+    }
+
+    stage('Trivy Security Scan') {
+        sh '''
+            if ! command -v trivy &> /dev/null; then
+                wget -qO- https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+            fi
+            trivy image --severity HIGH,CRITICAL --ignore-unfixed --format json -o trivy-report.json raiden004/gamevault
+            trivy image --severity HIGH,CRITICAL --ignore-unfixed --no-progress raiden004/gamevault
+        '''
+        archiveArtifacts artifacts: 'trivy-report.json', allowEmptyArchive: true
     }
 
     stage('Docker image push') {
@@ -56,5 +66,4 @@ node {
             '''
         }
     }
-
 }
