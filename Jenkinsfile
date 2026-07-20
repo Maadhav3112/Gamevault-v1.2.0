@@ -47,7 +47,7 @@ node {
         ]) {
             sh '''
                 docker pull raiden004/gamevault:latest
-                docker run -d --name tomcattest -p 80:8080 \
+                docker run -d --name tomcattest -p 8080:8080 \
                   -e DB_HOST=$DB_HOST \
                   -e DB_NAME=$DB_NAME \
                   -e DB_USERNAME=$DB_USER \
