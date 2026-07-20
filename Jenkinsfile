@@ -13,7 +13,7 @@ node {
     stage('SonarQube Analysis') {
         def mvn = tool name: 'Maven-3.9.16', type: 'maven'
         dir('backend') {
-            withSonarQubeEnv('SonarQube') { // Recommended: specify Sonar server name configured in Jenkins
+            withSonarQubeEnv() {
                 sh "${mvn}/bin/mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=gamevault -Dsonar.projectName='GameVault'"
             }
         }
@@ -35,7 +35,6 @@ node {
 
     stage('Docker Image Push') {
         withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-            // Secure login via stdin piping to prevent password leaks in logs
             sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
             sh 'docker push raiden004/gamevault:latest'
         }
