@@ -112,7 +112,7 @@ async function fetchAndRenderProducts() {
     updateResultsCount(visible.length, products.length);
   } catch (error) {
     console.error('Failed to fetch products:', error);
-    showToast('Could not load products. Is the backend running on :8080?', true);
+    showToast('Could not load products. Please check API server at :8085', true);
     dom.productGrid.innerHTML = '';
     dom.emptyState.hidden = false;
   } finally {
