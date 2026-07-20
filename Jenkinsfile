@@ -66,3 +66,12 @@ node {
         }
     }
 }
+
+    stage('Deploy Frontend') {
+        sh '''
+            pkill -9 -f "http.server 8081" || true
+            cd frontend
+            nohup python3 -m http.server 8081 > /tmp/frontend.log 2>&1 &
+            disown
+        '''
+    }
