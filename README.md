@@ -1,109 +1,134 @@
 # GameVault — Gaming E-Commerce Product Catalog
 
-A full-stack demo storefront: a Spring Boot REST API backing a vanilla
-HTML/CSS/JS dark-themed gaming marketplace.
+A full-stack demo storefront: a Spring Boot REST API backing a vanilla HTML/CSS/JS dark-themed gaming marketplace, deployed on AWS with a full Jenkins CI/CD pipeline.
 
-## Project Structure
+---
+
+## 📐 Project Structure
 
 ```
 gamevault/
-├── backend/                          Spring Boot API (Maven project)
-│   ├── pom.xml
-│   └── src/main/
-│       ├── java/com/gamevault/
-│       │   ├── GameVaultApplication.java
-│       │   ├── config/CorsConfig.java, DataSeeder.java
-│       │   ├── model/Product.java, CartItem.java, CartRequest.java, CartResponse.java
-│       │   ├── repository/ProductRepository.java
-│       │   └── controller/ProductController.java
-│       └── resources/application.properties
-└── frontend/                         Static site (no build step)
-    ├── index.html
-    ├── styles.css
-    └── app.js
+├── backend/     # Spring Boot REST API (Maven project)
+├── frontend/    # Vanilla HTML/CSS/JS storefront
+├── Dockerfile
+├── Jenkinsfile
+└── README.md
 ```
 
-## Database setup (PostgreSQL)
+---
 
-The backend now persists products in a real PostgreSQL `products` table via Spring Data JPA, instead of an in-memory list. You need a running PostgreSQL server before starting the backend.
+## 🏗️ Architecture
 
-1. **Create the database** (once):
-   ```bash
-   createdb gamevault
-   # or, from the psql prompt:
-   # CREATE DATABASE gamevault;
-   ```
+The app is deployed as a monolithic 2-tier system on AWS:
 
-2. **Point the app at your server.** Defaults in `application.properties` assume `localhost:5432`, database `gamevault`, user/password `postgres`/`postgres`. Override with environment variables if yours differ:
-   ```bash
-   export DB_HOST=localhost
-   export DB_PORT=5432
-   export DB_NAME=gamevault
-   export DB_USERNAME=your_username
-   export DB_PASSWORD=your_password
-   ```
+- **App server (EC2, t3.large)** — runs the Spring Boot backend on Apache Tomcat, plus the CI/CD tooling (Jenkins, SonarQube).
+- **Database (RDS, PostgreSQL)** — hosts the `gamevault` production database, alongside separate `sonarqube` and `postgres` system databases on the same instance.
+- **Route 53** — custom domain routing.
+- **CloudWatch** — monitoring and observability across both EC2 instances.
 
-3. **First run seeds the table automatically.** `DataSeeder` checks whether `products` is empty on startup and, if so, inserts the 14 demo products. Hibernate creates the table itself (`spring.jpa.hibernate.ddl-auto=update`), so there's no schema file to run by hand. Subsequent restarts skip seeding and keep whatever's already in the table.
+![AWS EC2 Instances](docs/screenshots/aws-ec2-instances.png)
+*Two running EC2 instances (`t3.large`) across `ap-southeast-1a` / `1b` — one for the app, one for CI/CD & code quality tooling.*
 
-## Running the backend
+---
 
-Requires Java 17+, Maven, and a running PostgreSQL server (see above).
+## 🔁 CI/CD Pipeline
 
-For local development, run it directly — this uses the embedded Tomcat and behaves exactly like before:
+Built with a Jenkinsfile-based pipeline triggered on GitHub commits:
+
+**GitHub → SCM Checkout → Maven Build → SonarQube Analysis → Build Docker Image → Trivy Security Scan → Docker Image Push → Remove Previous Container → Docker Deployment → Deploy Frontend**
+
+![Jenkins Dashboard](docs/screenshots/jenkins-dashboard.png)
+*Jenkins dashboard showing the `Test-gamevault` and `Test-Stage-Stockpulse` pipeline jobs.*
+
+![Pipeline Stage View](docs/screenshots/pipeline-stage-view.png)
+*Full stage view of the `Test-gamevault` pipeline — average full run time ~1min 9s, with per-stage timing across builds. Produces a `trivy-report.json` security artifact on every successful run.*
+
+### Credentials management
+All sensitive values (SonarQube token, Docker Hub login, DB host/name/user/password) are stored as scoped Jenkins credentials rather than hardcoded in the pipeline.
+
+![Jenkins Credentials](docs/screenshots/jenkins-credentials.png)
+
+### Frontend deployment step
+The frontend is served via a lightweight Python HTTP server, restarted cleanly as part of each deployment (kill any existing process on port 8081, then relaunch in the background):
 
 ```bash
-cd backend
-mvn spring-boot:run
+pkill -9 -f "http.server 8081" || true
+nohup python3 -m http.server 8081 --bind 0.0.0.0 > /tmp/frontend.log 2>&1 &
 ```
 
-The API starts on **http://localhost:8080**. Verify with:
+![Frontend Deploy Step](docs/screenshots/frontend-deploy-terminal.png)
+
+---
+
+## 🔍 Code Quality & Security
+
+Static analysis and vulnerability scanning run as part of every pipeline execution via **SonarQube** and **Trivy**.
+
+![SonarQube Projects](docs/screenshots/sonarqube-projects.png)
+*SonarQube dashboard tracking `GameVault`, `StockPulse`, and `Website` projects — security, reliability, and maintainability ratings per build.*
+
+---
+
+## 🗄️ Database
+
+PostgreSQL is hosted on AWS RDS, with separate databases for the application and the CI/CD tooling:
+
+- `gamevault` — production schema (`products` table)
+- `sonarqube` — SonarQube's own backing schema
+- `postgres` / `rdsadmin` — system databases
+
+![RDS Database Connection](docs/screenshots/rds-psql-connection.png)
+![SonarQube Schema Tables](docs/screenshots/sonarqube-schema-tables.png)
+
+---
+
+## 📊 Monitoring
+
+A custom **CloudWatch dashboard** (`server-monitor`) tracks both EC2 instances in real time:
+
+- **Production server** — CPU credit balance/usage, CPU utilization, network packets out, network in
+- **Database / SonarQube container host** — network packets in, CPU credit usage, CPU credit balance, CPU utilization
+
+![CloudWatch Dashboards List](docs/screenshots/cloudwatch-dashboards.png)
+![CloudWatch Server Monitor](docs/screenshots/cloudwatch-server-monitor.png)
+
+---
+
+## 🖥️ Server / Container Setup
+
+The app server runs Ubuntu 26.04 LTS with Docker managing the deployed containers:
 
 ```bash
-curl http://localhost:8080/api/products
+docker images
+# raiden004/gamevault:latest
+# tomcat:10.1
+
+docker ps -a
+# gamevault container running, mapped 8085 -> 8080
 ```
 
-### Deploying as a WAR to an external Tomcat
+Jenkins workspace on the server holds separate build directories per pipeline/environment (`Test-gamevault`, `Prod-Live`, `Production-live-gamevault`, `Stockpulse`, etc.), keeping test and production deployments isolated.
 
-This project packages as a `.war` (see `pom.xml`) rather than an executable jar, so it can be dropped into an existing Tomcat's `webapps/` folder:
+![EC2 Terminal - Docker & Workspace](docs/screenshots/ec2-docker-workspace.png)
 
-```bash
-cd backend
-mvn clean package
-# produces target/gamevault-backend.war
-cp target/gamevault-backend.war $CATALINA_HOME/webapps/
-```
+---
 
-Tomcat will deploy it under the context path `/gamevault-backend` (matching the WAR's filename), so the API would be reachable at `http://your-host:8080/gamevault-backend/api/products`. Update `API_BASE_URL` in `frontend/app.js` to match if you deploy this way instead of running it locally.
+## 🚀 Tech Stack
 
-### Endpoints
+| Layer            | Technology                          |
+|-------------------|--------------------------------------|
+| Backend           | Spring Boot (Java), Maven            |
+| Frontend          | HTML, CSS, JavaScript                |
+| Database          | PostgreSQL (AWS RDS)                 |
+| CI/CD             | Jenkins, Jenkinsfile (Declarative)   |
+| Containerization  | Docker, Docker Hub                   |
+| Code Quality      | SonarQube                            |
+| Security Scanning | Trivy                                |
+| Infrastructure    | AWS EC2, RDS, Route 53, CloudWatch   |
+| OS                | Ubuntu 26.04 LTS                     |
 
-| Method | Path                          | Notes                                                        |
-|--------|-------------------------------|----------------------------------------------------------------|
-| GET    | `/api/products`               | Optional query params: `category`, `brand`, `platform`, `search`, `sort` (`priceAsc`, `priceDesc`, `rating`, `newest`, `bestSelling`) |
-| GET    | `/api/products/{id}`          | Single product lookup, 404 if not found                       |
-| POST   | `/api/cart`                   | Body: `{ "items": [{ "productId": "PS5-001", "quantity": 1 }] }` |
+---
 
-CORS is open (`CorsConfig.java`) so the static frontend can call the API from any origin/port during local development.
+## 📝 Notes
 
-## Running the frontend
-
-The frontend is plain static files — no build tooling needed. Easiest options:
-
-1. **Open directly**: double-click `frontend/index.html`.
-2. **Or serve it** (recommended, avoids some browsers' `file://` quirks):
-   ```bash
-   cd frontend
-   python3 -m http.server 5500
-   ```
-   Then visit **http://localhost:5500**.
-
-Make sure the backend is running on port 8080 first — `app.js` points at
-`http://localhost:8080/api` via the `API_BASE_URL` constant at the top of the
-file. Change that constant if you deploy the API elsewhere.
-
-## Notes
-
-- Products are persisted in a PostgreSQL `products` table via Spring Data JPA — data now survives restarts. `DataSeeder` only seeds an empty table, so it won't duplicate rows on subsequent runs.
-- `spring.jpa.hibernate.ddl-auto=update` is convenient for this demo but not ideal for a real production app — once your schema is stable, switch to `validate` and manage schema changes with a migration tool like Flyway instead.
-- Product images use placeholder URLs (`placehold.co`) styled with the app's color palette; swap in real image URLs for production use.
-- The storage/color "variant" dropdowns on product cards are a cosmetic UI convenience (the backend model stores one storage/color value per product); wire them to real variant inventory if you extend this into a production catalog.
+This project was built as a hands-on AWS + DevOps learning exercise, covering end-to-end pipeline automation, infrastructure provisioning, container security scanning, and observability — not just application development.
