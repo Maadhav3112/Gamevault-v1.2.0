@@ -56,7 +56,7 @@ pkill -9 -f "http.server 8081" || true
 nohup python3 -m http.server 8081 --bind 0.0.0.0 > /tmp/frontend.log 2>&1 &
 ```
 
-![Frontend Deploy Step](Images/frontend-port-mapping.png)
+![Frontend Deploy Step](Image/frontend-port-mapping.png)
 
 ---
 
