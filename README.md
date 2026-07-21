@@ -26,7 +26,7 @@ The app is deployed as a monolithic 2-tier system on AWS:
 - **Route 53** — custom domain routing.
 - **CloudWatch** — monitoring and observability across both EC2 instances.
 
-![AWS EC2 Instances](docs/screenshots/aws-ec2-instances.png)
+![AWS EC2 Instances](docs/EC2 instance.png)
 *Two running EC2 instances (`t3.large`) across `ap-southeast-1a` / `1b` — one for the app, one for CI/CD & code quality tooling.*
 
 ---
