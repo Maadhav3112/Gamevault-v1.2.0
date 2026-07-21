@@ -37,10 +37,10 @@ Built with a Jenkinsfile-based pipeline triggered on GitHub commits:
 
 **GitHub → SCM Checkout → Maven Build → SonarQube Analysis → Build Docker Image → Trivy Security Scan → Docker Image Push → Remove Previous Container → Docker Deployment → Deploy Frontend**
 
-![Jenkins Dashboard](Image/Jenkins-pipeline.png)
+![Jenkins Dashboard](Image/Jenkine-pipeline-stages.png)
 *Jenkins dashboard showing the `Test-gamevault` and `Test-Stage-Stockpulse` pipeline jobs.*
 
-![Pipeline Stage View](Image/Jenkine-pipeline-stages.png)
+![Pipeline Stage View](Image/Jenkins-pipeline.png)
 *Full stage view of the `Test-gamevault` pipeline — average full run time ~1min 9s, with per-stage timing across builds. Produces a `trivy-report.json` security artifact on every successful run.*
 
 ### Credentials management
