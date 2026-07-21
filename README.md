@@ -37,16 +37,16 @@ Built with a Jenkinsfile-based pipeline triggered on GitHub commits:
 
 **GitHub → SCM Checkout → Maven Build → SonarQube Analysis → Build Docker Image → Trivy Security Scan → Docker Image Push → Remove Previous Container → Docker Deployment → Deploy Frontend**
 
-![Jenkins Dashboard](docs/screenshots/jenkins-dashboard.png)
+![Jenkins Dashboard](Image/Jenkins-pipeline.png)
 *Jenkins dashboard showing the `Test-gamevault` and `Test-Stage-Stockpulse` pipeline jobs.*
 
-![Pipeline Stage View](docs/screenshots/pipeline-stage-view.png)
+![Pipeline Stage View](Image/Jenkine-pipeline-stages.png)
 *Full stage view of the `Test-gamevault` pipeline — average full run time ~1min 9s, with per-stage timing across builds. Produces a `trivy-report.json` security artifact on every successful run.*
 
 ### Credentials management
 All sensitive values (SonarQube token, Docker Hub login, DB host/name/user/password) are stored as scoped Jenkins credentials rather than hardcoded in the pipeline.
 
-![Jenkins Credentials](docs/screenshots/jenkins-credentials.png)
+![Jenkins Credentials](Image/Credeintials-jenkins.png)
 
 ### Frontend deployment step
 The frontend is served via a lightweight Python HTTP server, restarted cleanly as part of each deployment (kill any existing process on port 8081, then relaunch in the background):
@@ -56,7 +56,7 @@ pkill -9 -f "http.server 8081" || true
 nohup python3 -m http.server 8081 --bind 0.0.0.0 > /tmp/frontend.log 2>&1 &
 ```
 
-![Frontend Deploy Step](docs/screenshots/frontend-deploy-terminal.png)
+![Frontend Deploy Step](Images/frontend-port-mapping.png)
 
 ---
 
@@ -64,7 +64,7 @@ nohup python3 -m http.server 8081 --bind 0.0.0.0 > /tmp/frontend.log 2>&1 &
 
 Static analysis and vulnerability scanning run as part of every pipeline execution via **SonarQube** and **Trivy**.
 
-![SonarQube Projects](docs/screenshots/sonarqube-projects.png)
+![SonarQube Projects](Image/frontend-port-mapping.png)
 *SonarQube dashboard tracking `GameVault`, `StockPulse`, and `Website` projects — security, reliability, and maintainability ratings per build.*
 
 ---
@@ -77,8 +77,9 @@ PostgreSQL is hosted on AWS RDS, with separate databases for the application and
 - `sonarqube` — SonarQube's own backing schema
 - `postgres` / `rdsadmin` — system databases
 
-![RDS Database Connection](docs/screenshots/rds-psql-connection.png)
-![SonarQube Schema Tables](docs/screenshots/sonarqube-schema-tables.png)
+![RDS Database Connection](Image/Database.png)
+![SonarQube Schema Tables](Image/database-sonarqube.png)
+![gamevault-website Schema Tables](Image/gamevault-database.png)
 
 ---
 
@@ -89,8 +90,8 @@ A custom **CloudWatch dashboard** (`server-monitor`) tracks both EC2 instances i
 - **Production server** — CPU credit balance/usage, CPU utilization, network packets out, network in
 - **Database / SonarQube container host** — network packets in, CPU credit usage, CPU credit balance, CPU utilization
 
-![CloudWatch Dashboards List](docs/screenshots/cloudwatch-dashboards.png)
-![CloudWatch Server Monitor](docs/screenshots/cloudwatch-server-monitor.png)
+![CloudWatch Dashboards List](Image/Cloudwatch-dashboard.png)
+![CloudWatch Server Monitor](Image/Cloudwatch.png)
 
 ---
 
@@ -109,10 +110,12 @@ docker ps -a
 
 Jenkins workspace on the server holds separate build directories per pipeline/environment (`Test-gamevault`, `Prod-Live`, `Production-live-gamevault`, `Stockpulse`, etc.), keeping test and production deployments isolated.
 
-![EC2 Terminal - Docker & Workspace](docs/screenshots/ec2-docker-workspace.png)
+![EC2 Terminal - Docker & Workspace](Image/Jnekins-docker-deployment-maven.png)
 
 ---
-
+![Gamevault-website](Image/gamevault.png)
+![Gamevault-website](Image/gamevault-2.png)
+![Gamevault-website](Image/gamevault-1.png)
 ## 🚀 Tech Stack
 
 | Layer            | Technology                          |
