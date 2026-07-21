@@ -64,7 +64,7 @@ nohup python3 -m http.server 8081 --bind 0.0.0.0 > /tmp/frontend.log 2>&1 &
 
 Static analysis and vulnerability scanning run as part of every pipeline execution via **SonarQube** and **Trivy**.
 
-![SonarQube Projects](Image/frontend-port-mapping.png)
+![SonarQube Projects](Image/Sonarqube-test.png)
 *SonarQube dashboard tracking `GameVault`, `StockPulse`, and `Website` projects — security, reliability, and maintainability ratings per build.*
 
 ---
